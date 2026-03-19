@@ -50,6 +50,8 @@ public struct Session: Codable {
     public var automaticTax: SessionAutomaticTax?
     /// The value (`auto` or `required`) for whether Checkout collected the customer’s billing address.
     public var billingAddressCollection: SessionBillingAddressCollection?
+    //// The client secret of your Checkout Session. Applies to Checkout Sessions with ui_mode: embedded or ui_mode: custom.
+    public var clientSecret: String?
     /// Results of `consent_collection` for this session.
     public var consent: SessionConsent?
     /// When set, provides configuration for the Checkout Session to gather active consent from customers.
@@ -130,6 +132,7 @@ public struct Session: Codable {
                 amountTotal: Int? = nil,
                 automaticTax: SessionAutomaticTax? = nil,
                 billingAddressCollection: SessionBillingAddressCollection? = nil,
+                clientSecret: String? = nil,
                 consent: SessionConsent? = nil,
                 consentCollection: SessionConsentCollection? = nil,
                 created: Date,
@@ -180,6 +183,7 @@ public struct Session: Codable {
         self.amountTotal = amountTotal
         self.automaticTax = automaticTax
         self.billingAddressCollection = billingAddressCollection
+        self.clientSecret = clientSecret
         self.consent = consent
         self.consentCollection = consentCollection
         self.created = created
@@ -719,6 +723,12 @@ public enum SessionMode: String, Codable {
     case setup
     /// Use Stripe Billing to set up fixed-price subscriptions.
     case subscription
+}
+
+public enum SessionUIMode: String, Codable {
+    case custom
+    case embedded
+    case hosted
 }
 
 
