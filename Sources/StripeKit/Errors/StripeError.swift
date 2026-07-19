@@ -55,6 +55,13 @@ public enum StripeErrorType: String, Codable {
     case rateLimitError = "rate_limit_error"
     /// Errors triggered by our client-side libraries when failing to validate fields (e.g., when a card number or expiration date is invalid or incomplete).
     case validationError = "validation_error"
+    /// A fallback used when Stripe returns a `type` value that isn't recognized by this version of StripeKit (Stripe's API evolves over time). Decoding falls back to this case instead of throwing.
+    case unknown = "unknown"
+
+    public init(from decoder: Decoder) throws {
+        let rawValue = try decoder.singleValueContainer().decode(String.self)
+        self = Self(rawValue: rawValue) ?? .unknown
+    }
 }
 
 // https://stripe.com/docs/api#errors-code
@@ -104,6 +111,8 @@ public enum StripeErrorCode: String, Codable {
     case couponExpired = "coupon_expired"
     /// The maximum number of subscriptions for a customer has been reached. Contact us if you are receiving this error.
     case customerMaxSubscriptions = "customer_max_subscriptions"
+    /// The location provided for the customer is invalid or could not be determined, so tax could not be calculated for this transaction. Provide a valid customer address, or collect and set the customer's tax location explicitly.
+    case customerTaxLocationInvalid = "customer_tax_location_invalid"
     /// The email address is invalid (e.g., not properly formatted). Check that the email address is properly formatted and only includes allowed characters.
     case emailInvalid = "email_invalid"
     /// The card has expired. Check the expiration date or use a different card.
@@ -232,6 +241,13 @@ public enum StripeErrorCode: String, Codable {
     case upstreamOrderCreationFailed = "upstream_order_creation_failed"
     /// The URL provided is invalid.
     case urlInvalid = "url_invalid"
+    /// A fallback used when Stripe returns a `code` value that isn't recognized by this version of StripeKit (Stripe's API evolves over time). Decoding falls back to this case instead of throwing.
+    case unknown = "unknown"
+
+    public init(from decoder: Decoder) throws {
+        let rawValue = try decoder.singleValueContainer().decode(String.self)
+        self = Self(rawValue: rawValue) ?? .unknown
+    }
 }
 
 // https://stripe.com/docs/api#errors-decline-code
@@ -325,6 +341,13 @@ public enum StripeDeclineCode: String, Codable {
     case withdrawalCountLimitExceeded = "withdrawal_count_limit_exceeded"
 	/// The request was in test mode, but used a non test (live) card. For a list of valid test cards, visit: https://stripe.com/docs/testing.
     case testModeLiveCard = "test_mode_live_card"
+    /// A fallback used when Stripe returns a `decline_code` value that isn't recognized by this version of StripeKit (Stripe's API evolves over time). Decoding falls back to this case instead of throwing.
+    case unknown = "unknown"
+
+    public init(from decoder: Decoder) throws {
+        let rawValue = try decoder.singleValueContainer().decode(String.self)
+        self = Self(rawValue: rawValue) ?? .unknown
+    }
     
     public var nextSteps: String {
         switch self {
@@ -372,6 +395,7 @@ public enum StripeDeclineCode: String, Codable {
         case .tryAgainLater: return "Ask the customer to attempt the payment again. If subsequent payments are declined, the customer should contact their card issuer for more information."
         case .withdrawalCountLimitExceeded: return "The customer should use an alternative payment method."
         case .testModeLiveCard: return "The customer should use a test card https://stripe.com/docs/testing#cards"
+        case .unknown: return "The customer needs to contact their card issuer for more information."
         }
     }
 }
