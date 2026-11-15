@@ -28,10 +28,13 @@ final class PromotionCodeTests: XCTestCase {
             XCTFail("Expected an in-memory request body")
             return [:]
         }
-        let bodyString = String(buffer: buffer)
-        let components = try XCTUnwrap(URLComponents(string: "https://example.test/?\(bodyString)"))
-        return try Dictionary(uniqueKeysWithValues: XCTUnwrap(components.queryItems).map {
-            ($0.name, try XCTUnwrap($0.value))
+        return try Dictionary(uniqueKeysWithValues: String(buffer: buffer).split(separator: "&").map {
+            let pair = $0.split(separator: "=", maxSplits: 1, omittingEmptySubsequences: false)
+            XCTAssertEqual(pair.count, 2)
+            return (
+                try XCTUnwrap(String(pair[0]).removingPercentEncoding),
+                try XCTUnwrap(String(try XCTUnwrap(pair.last)).removingPercentEncoding)
+            )
         })
     }
 
