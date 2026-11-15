@@ -68,7 +68,7 @@ public struct StripePromotionCodesRoutes: PromotionCodesRoutes {
                        expiresAt: Date? = nil,
                        maxRedemptions: Int? = nil,
                        restrictions: [String: Any]? = nil) async throws -> PromotionCode {
-        var body: [String: Any] = ["coupon": coupon]
+        var body: [String: Any] = ["promotion": ["type": "coupon", "coupon": coupon]]
         
         if let code {
             body["code"] = code
@@ -87,7 +87,7 @@ public struct StripePromotionCodesRoutes: PromotionCodesRoutes {
         }
         
         if let expiresAt {
-            body["expiresAt"] = Int(expiresAt.timeIntervalSince1970)
+            body["expires_at"] = Int(expiresAt.timeIntervalSince1970)
         }
         
         if let maxRedemptions {

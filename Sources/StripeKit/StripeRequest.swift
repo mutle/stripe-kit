@@ -27,12 +27,18 @@ extension HTTPClientRequest.Body {
 }
 
 struct StripeAPIHandler {
-    private let httpClient: HTTPClient
+    private let execute: (HTTPClientRequest) async throws -> HTTPClientResponse
     private let apiKey: String
     private let decoder = JSONDecoder()
 
     init(httpClient: HTTPClient, apiKey: String) {
-        self.httpClient = httpClient
+        self.init(apiKey: apiKey) { request in
+            try await httpClient.execute(request, timeout: .seconds(60))
+        }
+    }
+
+    init(apiKey: String, execute: @escaping (HTTPClientRequest) async throws -> HTTPClientResponse) {
+        self.execute = execute
         self.apiKey = apiKey
         decoder.dateDecodingStrategy = .secondsSince1970
         decoder.keyDecodingStrategy = .convertFromSnakeCase
@@ -54,7 +60,7 @@ struct StripeAPIHandler {
         request.method = method
         request.body = body
         
-        let response = try await httpClient.execute(request, timeout: .seconds(60))
+        let response = try await execute(request)
         let responseData = try await response.body.collect(upTo: 1024 * 1024 * 100) // 500mb to account for data downloads.
         
         guard response.status == .ok else {
