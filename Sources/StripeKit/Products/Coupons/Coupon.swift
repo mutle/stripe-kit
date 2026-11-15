@@ -25,11 +25,11 @@ public struct Coupon: Codable {
     /// Name of the coupon displayed to customers on for instance invoices or receipts.
     public var name: String?
     /// Percent that will be taken off the subtotal of any invoices for this customer for the duration of the coupon. For example, a coupon with `percent_off` of 50 will make a $100 invoice $50 instead.
-    public var percentOff: Int?
+    public var percentOff: Double?
     /// String representing the object’s type. Objects of the same type share the same value.
     public var object: String
     /// Contains information about what this coupon applies to. This field is not included by default. To include it in the response, expand the `applies_to` field.
-    public var appliesTo: String?
+    public var appliesTo: CouponAppliesTo?
     /// Time at which the object was created. Measured in seconds since the Unix epoch.
     public var created: Date
     /// Coupons defined in each available currency option. Each key must be a three-letter ISO currency code and a supported currency. For example, to get your coupon in `eur`, fetch the value of the `eur` key in `currency_options`. This field is not included by default. To include it in the response, expand the `currency_options` field.
@@ -52,9 +52,9 @@ public struct Coupon: Codable {
                 durationInMonths: Int? = nil,
                 metadata: [String : String]? = nil,
                 name: String? = nil,
-                percentOff: Int? = nil,
+                percentOff: Double? = nil,
                 object: String,
-                appliesTo: String? = nil,
+                appliesTo: CouponAppliesTo? = nil,
                 created: Date,
                 currencyOptions: [Currency : CouponCurrencyOptions]? = nil,
                 livemode: Bool? = nil,

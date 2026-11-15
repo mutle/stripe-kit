@@ -1,5 +1,10 @@
 # Changelog
 
+## Unreleased
+* Preserve `create(coupon:...)` while sending Clover's nested `promotion[type]` and `promotion[coupon]` parameters and `expires_at`.
+* Decode current promotion code responses through `PromotionCode.promotion` (`coupon` ID and `$coupon` expansion); retain the legacy top-level `coupon`.
+* Correct `Coupon.appliesTo` to `CouponAppliesTo?` and `percentOff` to `Double?`, including coupon creation and product restriction encoding. Callers passing integer variables must convert them to `Double`.
+
 ## 16.2.1 - 2022-5-31
 * [#148](https://github.com/vapor-community/stripe-kit/pull/148)
     * Added `card_present` to payment method type.

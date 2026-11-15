@@ -37,7 +37,7 @@ public protocol CouponRoutes: StripeAPIRoute {
                 durationInMonths: Int?,
                 metadata: [String: String]?,
                 name: String?,
-                percentOff: Int?,
+                percentOff: Double?,
                 id: String?,
                 appliesTo: CouponAppliesTo?,
                 currencyOptions: [Currency: CouponCurrencyOptions]?,
@@ -94,7 +94,7 @@ public struct StripeCouponRoutes: CouponRoutes {
                        durationInMonths: Int? = nil,
                        metadata: [String: String]? = nil,
                        name: String? = nil,
-                       percentOff: Int? = nil,
+                       percentOff: Double? = nil,
                        id: String? = nil,
                        appliesTo: CouponAppliesTo? = nil,
                        currencyOptions: [Currency: CouponCurrencyOptions]? = nil,
@@ -135,8 +135,8 @@ public struct StripeCouponRoutes: CouponRoutes {
             body["id"] = id
         }
 
-        if let appliesTo {
-            body["applies_to"] = appliesTo
+        if let products = appliesTo?.products {
+            body["applies_to"] = ["products": products]
         }
 
         if let currencyOptions {

@@ -12,8 +12,10 @@ public struct PromotionCode: Codable {
     public var id: String
     /// The customer-facing code. Regardless of case, this code must be unique across all active promotion codes for each customer.
     public var code: String?
-    /// Hash describing the coupon for this promotion code.
+    /// Legacy expanded coupon. Current API responses use `promotion` instead.
     public var coupon: Coupon?
+    /// The promotion referenced by this code.
+    public var promotion: PromotionCodePromotion?
     /// Set of key-value pairs that you can attach to an object. This can be useful for storing additional information about the object in a structured format.
     public var metadata: [String: String]?
     /// String representing the object’s type. Objects of the same type share the same value.
@@ -47,10 +49,12 @@ public struct PromotionCode: Codable {
                 livemode: Bool? = nil,
                 maxRedemptions: Int? = nil,
                 restrictions: PromotionCodeRestrictions? = nil,
-                timesRedeemed: Int? = nil) {
+                timesRedeemed: Int? = nil,
+                promotion: PromotionCodePromotion? = nil) {
         self.id = id
         self.code = code
         self.coupon = coupon
+        self.promotion = promotion
         self.metadata = metadata
         self.object = object
         self.active = active
@@ -61,6 +65,18 @@ public struct PromotionCode: Codable {
         self.maxRedemptions = maxRedemptions
         self.restrictions = restrictions
         self.timesRedeemed = timesRedeemed
+    }
+}
+
+public struct PromotionCodePromotion: Codable {
+    /// The promotion type, currently `coupon`.
+    public var type: String
+    /// The coupon ID, or the expanded coupon available through `$coupon`.
+    @Expandable<Coupon> public var coupon: String?
+
+    public init(type: String = "coupon", coupon: String? = nil) {
+        self.type = type
+        self._coupon = Expandable(id: coupon)
     }
 }
 
